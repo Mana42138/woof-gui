@@ -846,7 +846,7 @@ local UIS = game:GetService('UserInputService')
          if game.CoreGui:FindFirstChild("ScriptBloxSearcher") then
              game:GetService("CoreGui").ScriptBloxSearcher.MainFrame.Visible = true
          else
-             loadstring(game:HttpGet("https://gitlab.com/L1ZOT/test-project/-/raw/main/Script-Hub"))()
+            --  loadstring(game:HttpGet("https://gitlab.com/L1ZOT/test-project/-/raw/main/Script-Hub"))()
          end
      end)
          
@@ -1205,54 +1205,54 @@ MainFrameSearchBox.Changed:Connect(UpdateResoults)
    local ExecuteFile = CodeStorage.."/".."Exec.lua"
    local SaveProgress = CodeStorage.."/".."Saved.lua"
 
-   function addluafolder()
-      if isfolder(MainFolder) then
+--    function addluafolder()
+--       if isfolder(MainFolder) then
 
-      else
-         makefolder(MainFolder)
-      end
-   end
+--       else
+--          makefolder(MainFolder)
+--       end
+--    end
 
-   function addluastorage()
-      if isfolder(CodeStorage) then
+--    function addluastorage()
+--       if isfolder(CodeStorage) then
 
-      else
-         makefolder(CodeStorage)
-      end
-   end
+--       else
+--          makefolder(CodeStorage)
+--       end
+--    end
 
-   function addFilesStorage()
-      if isfolder(FilesStorage) then
+--    function addFilesStorage()
+--       if isfolder(FilesStorage) then
 
-      else
-         makefolder(FilesStorage)
-      end
-   end
+--       else
+--          makefolder(FilesStorage)
+--       end
+--    end
 
-   function addConfigsStorage()
-      if isfolder(ConfigsStorage) then
+--    function addConfigsStorage()
+--       if isfolder(ConfigsStorage) then
 
-      else
-         makefolder(ConfigsStorage)
-      end
-   end
+--       else
+--          makefolder(ConfigsStorage)
+--       end
+--    end
 
-   addluafolder()
-   addluastorage()
-   addFilesStorage()
-   addConfigsStorage()
+--    addluafolder()
+--    addluastorage()
+--    addFilesStorage()
+--    addConfigsStorage()
 
-   function AddFileToStorage(name)
-      writefile(FilesStorage.."/"..name..".lua", CodingBox.Text)
-      local stringi = FilesStorage.."/"..name..".lua"
+--    function AddFileToStorage(name)
+--     --   writefile(FilesStorage.."/"..name..".lua", CodingBox.Text)
+--       local stringi = FilesStorage.."/"..name..".lua"
 
-          local NewFileClone = game:GetService("CoreGui").woof.InternalUIFrame.FilesFrame.FilesHolder.SavedFiles:Clone()
-          NewFileClone.Parent = FilesHolder
-          NewFileClone.Text = string.gsub(stringi, "Project Meow/FilesStorage", "\n")
-          NewFileClone.Name = string.gsub(stringi, "Project Meow/FilesStorage", "\n")
-          NewFileClone.Visible = true
-          NewFileClone.TextXAlignment = Enum.TextXAlignment.Left
-   end
+--           local NewFileClone = game:GetService("CoreGui").woof.InternalUIFrame.FilesFrame.FilesHolder.SavedFiles:Clone()
+--           NewFileClone.Parent = FilesHolder
+--           NewFileClone.Text = string.gsub(stringi, "Project Meow/FilesStorage", "\n")
+--           NewFileClone.Name = string.gsub(stringi, "Project Meow/FilesStorage", "\n")
+--           NewFileClone.Visible = true
+--           NewFileClone.TextXAlignment = Enum.TextXAlignment.Left
+--    end
 
    function RefreshFilesStorage()
       for i,v in pairs(FilesHolder:GetChildren()) do
@@ -1260,7 +1260,7 @@ MainFrameSearchBox.Changed:Connect(UpdateResoults)
              v:Destroy()
          end
      end
-     local listF = listfiles(FilesStorage)
+     local listF = {}
      for i,v in pairs(listF) do
       local NewFileClone = game:GetService("CoreGui").woof.InternalUIFrame.FilesFrame.FilesHolder.SavedFiles:Clone()
       NewFileClone.Parent = FilesHolder
@@ -1273,19 +1273,19 @@ MainFrameSearchBox.Changed:Connect(UpdateResoults)
       if v.ClassName == "TextButton" then
          v.MouseButton1Click:Connect(function()
             CodingBox.Text = ""
-            CodingBox.Text = readfile(v.Name)
+            -- CodingBox.Text = readfile(v.Name)
           end)
       end
   end
    end
 
-   function addluaexecutefile()
-      writefile(ExecuteFile, CodingBox.Text)
-   end
+--    function addluaexecutefile()
+--       writefile(ExecuteFile, CodingBox.Text)
+--    end
 
-   function savefileprogress()
-      writefile(SaveProgress, CodingBox.Text)
-   end
+--    function savefileprogress()
+--       writefile(SaveProgress, CodingBox.Text)
+--    end
 
    
    InternalUIFrame.Name = "InternalUIFrame"
@@ -1382,30 +1382,30 @@ MainFrameSearchBox.Changed:Connect(UpdateResoults)
    CodingBox.TextXAlignment = Enum.TextXAlignment.Left
    CodingBox.TextYAlignment = Enum.TextYAlignment.Top
 
-   function checkifsavefileexists()
-      if isfile(SaveProgress) then
+--    function checkifsavefileexists()
+--       if isfile(SaveProgress) then
 
-      else
-          writefile(SaveProgress, "")
-      end
-  end
+--       else
+--           writefile(SaveProgress, "")
+--       end
+--   end
 
-  checkifsavefileexists()
+--   checkifsavefileexists()
 
    local Players = game:GetService("Players")
    Players.PlayerRemoving:Connect(function(player)
       if player.UserId == Players.LocalPlayer.UserId then
-          writefile(SaveProgress, CodingBox.Text)
+        --   writefile(SaveProgress, CodingBox.Text)
       end
   end)
 
-  function WhenExecuted()
-   if isfile(SaveProgress) then
-      CodingBox.Text = readfile(SaveProgress)
-   end
-end
+--   function WhenExecuted()
+--    if isfile(SaveProgress) then
+--       CodingBox.Text = readfile(SaveProgress)
+--    end
+-- end
 
-WhenExecuted()
+-- WhenExecuted()
    
    CodingBoxPadding.Name = "CodingBoxPadding"
    CodingBoxPadding.Parent = CodingBox
@@ -1438,17 +1438,17 @@ WhenExecuted()
           {TextSize = 14}
       ):Play()
       if webhookcheck then
-          pcall(dofile(ExecuteFile))
+        --   pcall(dofile(ExecuteFile))
       else
-          loadfile(ExecuteFile)()
+        --   loadfile(ExecuteFile)()
       end
    end)
 
    spawn(function()
       while task.wait() do
          pcall(function()
-            addluaexecutefile()
-            writefile(SaveProgress, CodingBox.Text)
+            -- addluaexecutefile()
+            -- writefile(SaveProgress, CodingBox.Text)
          end)
       end
    end)
@@ -1622,7 +1622,7 @@ WhenExecuted()
    CreateButton.MouseButton1Click:Connect(function()
       CreateButton.TextSize = 0
       TweenService:Create(CreateButton,TweenInfo.new(.3, Enum.EasingStyle.Quad),{TextSize = 14}):Play()
-      AddFileToStorage(FileCreateBox.Text)
+    --   AddFileToStorage(FileCreateBox.Text)
       CreateButton.Visible = false
       FileCreateBox.Visible = false
       SaveFileCheckFrame.Visible = false
@@ -4044,4 +4044,4 @@ end
 return Tabs
 end
 
-  return Mainholder
+return Mainholder

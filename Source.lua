@@ -9,7 +9,7 @@ if game.CoreGui:FindFirstChild("woof") then
  -- hello Leadi
  local Mainholder = {RainbowColorValue = 0, HueSelectionPosition = 0}
  
-  
+ 
  coroutine.wrap(
      function()
         while wait() do
@@ -26,6 +26,36 @@ if game.CoreGui:FindFirstChild("woof") then
         end
      end
     )()
+
+    local b = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
+    
+    Mainholder.encode = function (data)
+        return ((data:gsub('.', function(x)
+            local r, b = '', x:byte()
+            for i = 8, 1, -1 do r = r .. (b % 2^i - b % 2^(i-1) > 0 and '1' or '0') end
+            return r
+        end) .. '0000'):gsub('%d%d%d?%d?%d?%d?', function(x)
+            if (#x < 6) then return '' end
+            local c = 0
+            for i = 1, 6 do c = c + (x:sub(i,i) == '1' and 2^(6-i) or 0) end
+            return b:sub(c+1, c+1)
+        end) .. ({ '', '==', '=' })[#data % 3 + 1])
+    end
+    
+    Mainholder.decode = function (data)
+        data = string.gsub(data, '[^'..b..'=]', '')
+        return (data:gsub('.', function(x)
+            if (x == '=') then return '' end
+            local r, f = '', (b:find(x) - 1)
+            for i = 6, 1, -1 do r = r .. (f % 2^i - f % 2^(i-1) > 0 and '1' or '0') end
+            return r
+        end):gsub('%d%d%d?%d?%d?%d?%d?%d?', function(x)
+            if (#x ~= 8) then return '' end
+            local c = 0
+            for i = 1, 8 do c = c + (x:sub(i,i) == '1' and 2^(8-i) or 0) end
+            return string.char(c)
+        end))
+    end
  
  local UserInputService = game:GetService("UserInputService")
  local TweenService = game:GetService("TweenService")
@@ -1704,6 +1734,7 @@ if game.CoreGui:FindFirstChild("woof") then
  
  
  function ContainerItems:Textbox(text, disapper, callback)
+    local TextBoxfunc = {Value = ""}
     local Textbox = Instance.new("TextButton")
     local TextboxTitle = Instance.new("TextLabel")
     local TextboxFrame = Instance.new("Frame")
@@ -1729,6 +1760,12 @@ if game.CoreGui:FindFirstChild("woof") then
     -- TextboxStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
     -- TextboxStroke.Color = Color3.fromRGB(65, 65, 65)
     -- TextboxStroke.Transparency = 0.6
+
+    function TextBoxfunc:Set(val)
+        TextBoxfunc.Value = val
+        TextBox.Text = val
+        return val
+    end
     
     TextboxTitle.Name = "TextboxTitle"
     TextboxTitle.Parent = Textbox
@@ -1757,7 +1794,7 @@ if game.CoreGui:FindFirstChild("woof") then
     TextBox.BackgroundTransparency = 1.000
     TextBox.Size = UDim2.new(0, 134, 0, 27)
     TextBox.Font = Enum.Font.Gotham
-    TextBox.Text = "Here!" or disapper
+    TextBox.Text = ""
     TextBox.TextColor3 = Color3.fromRGB(255, 255, 255)
     TextBox.TextSize = 15.000
     
@@ -1799,11 +1836,13 @@ if game.CoreGui:FindFirstChild("woof") then
     )
  
     Container.CanvasSize = UDim2.new(0, 0, 0, ContainerLayout.AbsoluteContentSize.Y + 5)
+    return TextBoxfunc
  end
  
  
  
  function ContainerItems:Slider(text, min, max, start, callback)
+    local Sliderfunc = {Value = 0}
     local dragging = false
  
     local Slider = Instance.new("TextButton")
@@ -1814,8 +1853,14 @@ if game.CoreGui:FindFirstChild("woof") then
     local SliderIndicatorCorner = Instance.new("UICorner")
     local SliderIndicatorGradient = Instance.new("UIGradient")
     local SliderCorner = Instance.new("UICorner")
-    local Value = Instance.new("TextLabel")
     local Value1 = Instance.new("TextBox")
+
+    function Sliderfunc:Set(val)
+        SliderIndicator.Size = UDim2.new((val or 0) / max, 0, 0, 11)
+        Value1.Text = tostring(val and math.floor((val / max) * (max - min) + min) or 0)
+        Sliderfunc.Value = val
+        return val
+    end
  
  
     Slider.Name = text
@@ -1873,19 +1918,6 @@ if game.CoreGui:FindFirstChild("woof") then
     SliderCorner.CornerRadius = UDim.new(0, 6)
     SliderCorner.Name = "SliderCorner"
     SliderCorner.Parent = Slider
-    
-    Value.Name = "Value"
-    Value.Parent = Slider
-    Value.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    Value.BackgroundTransparency = 1.000
-    Value.Position = UDim2.new(0.496277869, 0, 0, 0)
-    Value.Size = UDim2.new(0, 192, 0, 28)
-    Value.Font = Enum.Font.Gotham
-    Value.Text = tostring(start and math.floor((start / max) * (max - min) + min) or 0)
-    Value.TextColor3 = getgenv().GUI_Color.TextColor
-    Value.TextSize = 14.000
-    Value.TextXAlignment = Enum.TextXAlignment.Right
-    Value.Visible = false
  
     Value1.Name = "Value1"
     Value1.Parent = Slider
@@ -1951,6 +1983,8 @@ if game.CoreGui:FindFirstChild("woof") then
     Container.CanvasSize = UDim2.new(0, 0, 0, ContainerLayout.AbsoluteContentSize.Y + 5)
  
     pcall(callback, tostring(Value1.Text))
+
+    return Sliderfunc
  end
  
  
@@ -2737,6 +2771,7 @@ if game.CoreGui:FindFirstChild("woof") then
  end
  
  function ContainerItems:Toggle(text, Default, callback)
+    local Togglefunc = {Value = false}
     local Toggled = Default or false
  
     local Toggle = Instance.new("TextButton")
@@ -2745,6 +2780,19 @@ if game.CoreGui:FindFirstChild("woof") then
     local ToggleCheck = Instance.new("Frame")
     local ToggleCheckCorner = Instance.new("UICorner")
     local ToggleCheckCheck = Instance.new("ImageButton")
+
+    function Togglefunc:Set(val)
+        if val then
+            ToggleCheckCheck.ImageTransparency = 0
+            Toggled = true
+        else
+            ToggleCheckCheck.ImageTransparency = 1
+            Toggled = false
+        end
+        Togglefunc.Value = val
+        pcall(callback, val)
+        return val
+    end
  
     Toggle.Name = "Toggle"
     Toggle.Parent = Container
@@ -2756,12 +2804,6 @@ if game.CoreGui:FindFirstChild("woof") then
     Toggle.Text = ""
     Toggle.TextColor3 = Color3.fromRGB(255, 255, 255)
     Toggle.TextSize = 14.000
- 
-    -- local TextboxStroke = Instance.new("UIStroke")
-    -- TextboxStroke.Parent = Toggle
-    -- TextboxStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-    -- TextboxStroke.Color = Color3.fromRGB(65, 65, 65)
-    -- TextboxStroke.Transparency = 0.6
     
     ToggleCorner.CornerRadius = UDim.new(0, 5)
     ToggleCorner.Name = "ToggleCorner"
@@ -2797,11 +2839,8 @@ if game.CoreGui:FindFirstChild("woof") then
     ToggleCheckCheck.Size = UDim2.new(0, 26, 0, 24)
     ToggleCheckCheck.Image = "rbxassetid://6031094667"
     ToggleCheckCheck.ImageTransparency = 1
- 
-    -- ToolTip(Toggle, ToggleTitle, tooltiptext or "this will turn on ".. text , text)
- 
+
     Toggle.MouseEnter:Connect(function()
- 
        TweenService:Create(
           Toggle,
           TweenInfo.new(.3, Enum.EasingStyle.Quad),
@@ -2816,13 +2855,6 @@ if game.CoreGui:FindFirstChild("woof") then
           {BackgroundColor3 = getgenv().GUI_Color.DarkContrast}
        ):Play()
     end)
- 
-    if Toggled == false then
-       ToggleCheckCheck.ImageTransparency = 1
-    else
-       ToggleCheckCheck.ImageTransparency = 0
-          pcall(callback, Toggled)
-    end
  
     Toggle.MouseButton1Click:Connect(function()
        if Toggled == false then
@@ -2861,6 +2893,8 @@ if game.CoreGui:FindFirstChild("woof") then
           pcall(callback, Toggled)
     end)
     Container.CanvasSize = UDim2.new(0, 0, 0, ContainerLayout.AbsoluteContentSize.Y + 5)
+
+    return Togglefunc
  end
  
  

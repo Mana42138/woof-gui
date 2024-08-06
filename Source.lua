@@ -204,7 +204,6 @@ if game.CoreGui:FindFirstChild("woof") then
     MainFrame.BackgroundColor3 = getgenv().GUI_Color.Bacground
     MainFrame.Position = UDim2.new(0.590548515, -325, 0.683814943, -250)
     MainFrame.Size = UDim2.new(0, 650, 0, 410)
-    MainFrame.Modal = true
     -- 0, 650, 0, 410 ^^
     
     MainCorner.CornerRadius = UDim.new(0, 5)

@@ -9,7 +9,7 @@ if game.CoreGui:FindFirstChild("woof") then
  -- hello Leadi
  local Mainholder = {RainbowColorValue = 0, HueSelectionPosition = 0}
  
- 
+  
  coroutine.wrap(
      function()
         while wait() do
